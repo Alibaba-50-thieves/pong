@@ -2,23 +2,24 @@ use ggez;
 use ggez::event;
 use ggez::graphics;
 use ggez::nalgebra as na;
+use ggez::{Context, ContextBuilder, GameResult};
 
 struct MainState;
 
 impl MainState {
-    fn new() -> ggez::GameResult<MainState> {
+    fn new() -> GameResult<MainState> {
         let s = MainState;
         Ok(s)
     }
 }
 
 impl event::EventHandler for MainState {
-    fn update(&mut self, _ctx: &mut ggez::Context) -> ggez::GameResult {
+    fn update(&mut self, _ctx: &mut Context) -> GameResult {
         Ok(())
     }
 
-    fn draw(&mut self, ctx: &mut ggez::Context) -> ggez::GameResult {
-        graphics::clear(ctx, [0.2, 0.2, 0.3, 1.0].into());
+    fn draw(&mut self, ctx: &mut Context) -> GameResult {
+        clear_background(ctx);
 
         let circle = get_ball_graphics(ctx, 400.0, 300.0)?;
         graphics::draw(ctx, &circle, (na::Point2::new(0.0, 0.0),))?;
@@ -28,14 +29,14 @@ impl event::EventHandler for MainState {
     }
 }
 
-pub fn main() -> ggez::GameResult { 
-    let cb = ggez::ContextBuilder::new("Pong", "ggez");
+pub fn main() -> GameResult { 
+    let cb = ContextBuilder::new("Pong", "Alibaba and the 50 Thieves");
     let (ctx, event_loop) = &mut cb.build()?;
     let state = &mut MainState::new()?;
     event::run(ctx, event_loop, state)
 }
 
-fn get_ball_graphics(ctx: &mut ggez::Context, px: f32, py: f32) -> Result<ggez::graphics::Mesh, ggez::error::GameError> {
+fn get_ball_graphics(ctx: &mut Context, px: f32, py: f32) -> GameResult<graphics::Mesh> {
     graphics::Mesh::new_circle(
         ctx,
         graphics::DrawMode::fill(),
@@ -44,4 +45,8 @@ fn get_ball_graphics(ctx: &mut ggez::Context, px: f32, py: f32) -> Result<ggez::
         0.2,
         graphics::WHITE,
     )
+}
+
+fn clear_background(ctx: &mut Context) {
+    graphics::clear(ctx, [0.2, 0.2, 0.3, 1.0].into());
 }
