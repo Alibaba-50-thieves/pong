@@ -54,7 +54,7 @@ impl event::EventHandler for MainState {
     }
 }
 
-pub fn main() -> GameResult { 
+pub fn main() -> GameResult {
     let cb = ContextBuilder::new("Pong", "Alibaba and the 50 Thieves");
     let (ctx, event_loop) = &mut cb.build()?;
     let state = &mut MainState::new()?;
