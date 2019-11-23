@@ -24,6 +24,22 @@ impl event::EventHandler for MainState {
         let circle = get_ball_graphics(ctx, 400.0, 300.0)?;
         graphics::draw(ctx, &circle, (na::Point2::new(0.0, 0.0),))?;
 
+        let player_paddle_width = 30.0;
+        let player_paddle_height = 150.0;
+        let player_paddle_x_offset = (player_paddle_width / 2.0) * -1.0;
+        let player_paddle_y_offset = (player_paddle_height / 2.0) * -1.0;
+
+        let player_paddle =
+            get_paddle_graphics(ctx, 55.0, 300.0, player_paddle_width, player_paddle_height)?;
+        graphics::draw(
+            ctx,
+            &player_paddle,
+            (na::Point2::new(
+                player_paddle_x_offset,
+                player_paddle_y_offset,
+            ),),
+        )?;
+
         graphics::present(ctx)?;
         Ok(())
     }
@@ -34,6 +50,21 @@ pub fn main() -> GameResult {
     let (ctx, event_loop) = &mut cb.build()?;
     let state = &mut MainState::new()?;
     event::run(ctx, event_loop, state)
+}
+
+fn get_paddle_graphics(
+    ctx: &mut Context,
+    x: f32,
+    y: f32,
+    width: f32,
+    height: f32,
+) -> GameResult<graphics::Mesh> {
+    graphics::Mesh::new_rectangle(
+        ctx,
+        graphics::DrawMode::fill(),
+        graphics::Rect::new(x, y, width, height),
+        graphics::WHITE,
+    )
 }
 
 fn get_ball_graphics(ctx: &mut Context, px: f32, py: f32) -> GameResult<graphics::Mesh> {
