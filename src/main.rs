@@ -24,20 +24,29 @@ impl event::EventHandler for MainState {
         let circle = get_ball_graphics(ctx, 400.0, 300.0)?;
         graphics::draw(ctx, &circle, (na::Point2::new(0.0, 0.0),))?;
 
-        let player_paddle_width = 30.0;
-        let player_paddle_height = 150.0;
-        let player_paddle_x_offset = (player_paddle_width / 2.0) * -1.0;
-        let player_paddle_y_offset = (player_paddle_height / 2.0) * -1.0;
+        let paddle_width = 30.0;
+        let paddle_height = 150.0;
+        let paddle_x_offset = (paddle_width / 2.0) * -1.0;
+        let paddle_y_offset = (paddle_height / 2.0) * -1.0;
 
-        let player_paddle =
-            get_paddle_graphics(ctx, 55.0, 300.0, player_paddle_width, player_paddle_height)?;
+        let player_paddle = get_paddle_graphics(ctx, 55.0, 300.0, paddle_width, paddle_height)?;
         graphics::draw(
             ctx,
             &player_paddle,
-            (na::Point2::new(
-                player_paddle_x_offset,
-                player_paddle_y_offset,
-            ),),
+            (na::Point2::new(paddle_x_offset, paddle_y_offset),),
+        )?;
+        graphics::draw(
+            ctx,
+            &player_paddle,
+            (na::Point2::new(paddle_x_offset, paddle_y_offset),),
+        )?;
+
+        let enemy_paddle =
+            get_paddle_graphics(ctx, 800.0 - 55.0, 300.0, paddle_width, paddle_height)?;
+        graphics::draw(
+            ctx,
+            &enemy_paddle,
+            (na::Point2::new(paddle_x_offset, paddle_y_offset),),
         )?;
 
         graphics::present(ctx)?;
