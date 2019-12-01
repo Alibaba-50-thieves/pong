@@ -3,9 +3,9 @@ use ggez::graphics;
 use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
 
-use super::draw::clear_background;
-use super::ball::get_ball_graphics;
-use super::paddle::get_paddle_graphics;
+use crate::draw::clear_background;
+use crate::ball::get_ball_graphics;
+use crate::paddle::get_paddle_graphics;
 
 const PADDLE_WIDTH : f32 = 30.0;
 const PADDLE_HEIGHT: f32 = 150.0;
@@ -22,7 +22,6 @@ impl MainState {
             ball_position: (400.0, 300.0),
             player_position: (40.0, 225.0),
             enemy_position: (800.0 - 70.0, 225.0),
-
         };
         Ok(s)
     }
@@ -38,7 +37,7 @@ impl MainState {
         Ok(())
     }
 
-    fn draw_plsyer(&mut self, ctx: &mut Context) -> GameResult {
+    fn draw_player(&mut self, ctx: &mut Context) -> GameResult {
         let player_paddle = get_paddle_graphics(ctx, self.player_position.0, self.player_position.1, PADDLE_WIDTH, PADDLE_HEIGHT)?;
         graphics::draw(ctx, &player_paddle, (na::Point2::new(0.0, 0.0),))?;
         Ok(())
@@ -60,9 +59,9 @@ impl event::EventHandler for MainState {
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
         clear_background(ctx);
 
-        let _ = self.draw_ball(ctx);
-        let _ = self.draw_plsyer(ctx);
-        let _ = self.draw_enemy(ctx);
+        self.draw_ball(ctx)?;
+        self.draw_player(ctx)?;
+        self.draw_enemy(ctx)?;
 
         graphics::present(ctx)?;
         Ok(())
