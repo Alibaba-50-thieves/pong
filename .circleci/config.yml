@@ -1,0 +1,23 @@
+version: 2
+
+jobs:
+  test:
+    docker:
+      - image: rust
+    steps:
+      - checkout
+      - run:
+          name: Update apt
+          command: apt update
+      - run:
+          name: Install ggez dependencies
+          command: apt -y install libsdl2-dev libasound2-dev
+      - run:
+          name: Run tests
+          command: cargo test --color=always
+
+workflows:
+  version: 2
+  run_ci_jobs:
+    jobs:
+      - test
