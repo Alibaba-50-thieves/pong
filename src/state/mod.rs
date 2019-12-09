@@ -6,13 +6,10 @@ use ggez::{Context, GameResult};
 use crate::ball::get_ball_graphics;
 use crate::draw::clear_background;
 use crate::paddle::get_paddle_graphics;
-use crate::player::Player;
+use crate::player::{Player, PADDLE_HEIGHT, PADDLE_WIDTH};
 
 pub const WINDOW_WIDTH: f32 = 800.0;
 pub const WINDOW_HEIGHT: f32 = 600.0;
-
-const PADDLE_WIDTH: f32 = 30.0;
-const PADDLE_HEIGHT: f32 = 150.0;
 
 pub struct MainState {
     pub ball_position: (f32, f32),
