@@ -5,6 +5,7 @@ use ggez::{ContextBuilder, GameResult};
 mod ball;
 mod draw;
 mod paddle;
+mod player;
 mod state;
 
 use state::MainState;
