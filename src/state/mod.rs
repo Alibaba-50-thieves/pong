@@ -3,16 +3,16 @@ use ggez::graphics;
 use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
 
-use crate::draw::clear_background;
 use crate::ball::get_ball_graphics;
+use crate::draw::clear_background;
 use crate::paddle::get_paddle_graphics;
 
-const PADDLE_WIDTH : f32 = 30.0;
+const PADDLE_WIDTH: f32 = 30.0;
 const PADDLE_HEIGHT: f32 = 150.0;
 
 pub struct MainState {
     pub ball_position: (f32, f32),
-    player_position: (f32,f32),
+    player_position: (f32, f32),
     enemy_position: (f32, f32),
 }
 
@@ -38,13 +38,25 @@ impl MainState {
     }
 
     fn draw_player(&mut self, ctx: &mut Context) -> GameResult {
-        let player_paddle = get_paddle_graphics(ctx, self.player_position.0, self.player_position.1, PADDLE_WIDTH, PADDLE_HEIGHT)?;
+        let player_paddle = get_paddle_graphics(
+            ctx,
+            self.player_position.0,
+            self.player_position.1,
+            PADDLE_WIDTH,
+            PADDLE_HEIGHT,
+        )?;
         graphics::draw(ctx, &player_paddle, (na::Point2::new(0.0, 0.0),))?;
         Ok(())
     }
 
     fn draw_enemy(&mut self, ctx: &mut Context) -> GameResult {
-        let enemy_paddle = get_paddle_graphics(ctx, self.enemy_position.0, self.enemy_position.1, PADDLE_WIDTH, PADDLE_HEIGHT)?;
+        let enemy_paddle = get_paddle_graphics(
+            ctx,
+            self.enemy_position.0,
+            self.enemy_position.1,
+            PADDLE_WIDTH,
+            PADDLE_HEIGHT,
+        )?;
         graphics::draw(ctx, &enemy_paddle, (na::Point2::new(0.0, 0.0),))?;
         Ok(())
     }
