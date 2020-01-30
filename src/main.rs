@@ -2,11 +2,10 @@ use ggez;
 use ggez::event;
 use ggez::{ContextBuilder, GameResult};
 
-
-mod state;
-mod draw;
 mod ball;
+mod draw;
 mod paddle;
+mod state;
 
 use state::MainState;
 
