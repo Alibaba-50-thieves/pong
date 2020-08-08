@@ -1,7 +1,11 @@
 #[cfg(test)]
 mod tests;
 
+use crate::draw::get_paddle_graphics;
 use crate::state::WINDOW_HEIGHT;
+use ggez::graphics;
+use ggez::nalgebra as na;
+use ggez::{Context, GameResult};
 
 pub const PLAYER_SPEED: f32 = 6.5;
 pub const PADDLE_WIDTH: f32 = 30.0;
@@ -43,6 +47,18 @@ impl Player {
         }
 
         self.handle_collisions();
+    }
+
+    pub fn draw(&mut self, ctx: &mut Context) -> GameResult {
+        let player_paddle = get_paddle_graphics(
+            ctx,
+            self.position.0,
+            self.position.1,
+            PADDLE_WIDTH,
+            PADDLE_HEIGHT,
+        )?;
+        graphics::draw(ctx, &player_paddle, (na::Point2::new(0.0, 0.0),))?;
+        Ok(())
     }
 
     fn handle_collisions(&mut self) {

@@ -1,12 +1,10 @@
 use ggez::event::{EventHandler, KeyCode, KeyMods};
 use ggez::graphics;
-use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
 
-use crate::ball::get_ball_graphics;
+use crate::ball::Ball;
 use crate::draw::clear_background;
-use crate::paddle::get_paddle_graphics;
-use crate::player::{Player, PADDLE_HEIGHT, PADDLE_WIDTH};
+use crate::player::{Player, PADDLE_WIDTH};
 
 pub const WINDOW_WIDTH: f32 = 800.0;
 pub const WINDOW_HEIGHT: f32 = 600.0;
@@ -14,7 +12,7 @@ pub const WINDOW_HEIGHT: f32 = 600.0;
 pub const GOAL_DISTANCE: f32 = 40.0;
 
 pub struct MainState {
-    pub ball_position: (f32, f32),
+    ball: Ball,
     player1: Player,
     player2: Player,
 }
@@ -22,7 +20,7 @@ pub struct MainState {
 impl MainState {
     pub fn new() -> GameResult<MainState> {
         let s = MainState {
-            ball_position: (400.0, 300.0),
+            ball: Ball::new(400.0, 300.0),
             player1: Player::new(40.0, 225.0),
             player2: Player::new(WINDOW_WIDTH - (PADDLE_WIDTH + GOAL_DISTANCE), 225.0),
         };
@@ -30,41 +28,9 @@ impl MainState {
     }
 
     pub fn update(&mut self) {
-        self.ball_position.0 += 3.0;
-        self.ball_position.0 = self.ball_position.0 % 800.0;
-
+        self.ball.update();
         self.player1.update();
         self.player2.update();
-    }
-
-    fn draw_ball(&mut self, ctx: &mut Context) -> GameResult {
-        let circle = get_ball_graphics(ctx, self.ball_position.0, self.ball_position.1)?;
-        graphics::draw(ctx, &circle, (na::Point2::new(0.0, 0.0),))?;
-        Ok(())
-    }
-
-    fn draw_player(&mut self, ctx: &mut Context) -> GameResult {
-        let player_paddle = get_paddle_graphics(
-            ctx,
-            self.player1.position.0,
-            self.player1.position.1,
-            PADDLE_WIDTH,
-            PADDLE_HEIGHT,
-        )?;
-        graphics::draw(ctx, &player_paddle, (na::Point2::new(0.0, 0.0),))?;
-        Ok(())
-    }
-
-    fn draw_enemy(&mut self, ctx: &mut Context) -> GameResult {
-        let enemy_paddle = get_paddle_graphics(
-            ctx,
-            self.player2.position.0,
-            self.player2.position.1,
-            PADDLE_WIDTH,
-            PADDLE_HEIGHT,
-        )?;
-        graphics::draw(ctx, &enemy_paddle, (na::Point2::new(0.0, 0.0),))?;
-        Ok(())
     }
 }
 
@@ -77,9 +43,9 @@ impl EventHandler for MainState {
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
         clear_background(ctx);
 
-        self.draw_ball(ctx)?;
-        self.draw_player(ctx)?;
-        self.draw_enemy(ctx)?;
+        self.ball.draw(ctx)?;
+        self.player1.draw(ctx)?;
+        self.player2.draw(ctx)?;
 
         graphics::present(ctx)?;
         Ok(())
@@ -87,7 +53,7 @@ impl EventHandler for MainState {
 
     fn key_down_event(
         &mut self,
-        _ctx: &mut Context,
+        ctx: &mut Context,
         keycode: KeyCode,
         _keymods: KeyMods,
         _repeat: bool,
@@ -105,6 +71,7 @@ impl EventHandler for MainState {
             KeyCode::Down => {
                 self.player2.move_down();
             }
+            KeyCode::Escape => ggez::event::quit(ctx),
             _ => (),
         };
     }
@@ -120,13 +87,4 @@ impl EventHandler for MainState {
             _ => (),
         };
     }
-}
-
-#[test]
-fn update_moves_ball() {
-    let mut state = MainState::new().unwrap();
-    let init_pos = state.ball_position;
-    state.update();
-    let updated_pos = state.ball_position;
-    assert!(init_pos != updated_pos);
 }
