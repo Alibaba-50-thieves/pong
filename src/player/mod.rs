@@ -74,4 +74,15 @@ impl Player {
             self.position.1 = 0.0;
         }
     }
+
+    pub fn paddle_vertex(&self) -> Vec<(f32, f32)> {
+        let (x, y) = self.position;
+
+        vec![
+            self.position,
+            (x, y + PADDLE_HEIGHT),
+            (x + PADDLE_WIDTH, y),
+            (x + PADDLE_WIDTH, y + PADDLE_HEIGHT),
+        ]
+    }
 }
