@@ -5,6 +5,7 @@ use ggez::{ContextBuilder, GameResult};
 
 mod ball;
 mod draw;
+mod math;
 mod player;
 mod state;
 
