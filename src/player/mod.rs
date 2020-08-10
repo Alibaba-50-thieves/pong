@@ -74,4 +74,15 @@ impl Player {
             self.position.1 = 0.0;
         }
     }
+
+    pub fn paddle_vertex(&self) -> Vec<na::Vector2<f32>> {
+        let (x, y) = self.position;
+
+        vec![
+            na::Vector2::new(self.position.0, self.position.1),
+            na::Vector2::new(x, y + PADDLE_HEIGHT),
+            na::Vector2::new(x + PADDLE_WIDTH, y),
+            na::Vector2::new(x + PADDLE_WIDTH, y + PADDLE_HEIGHT),
+        ]
+    }
 }

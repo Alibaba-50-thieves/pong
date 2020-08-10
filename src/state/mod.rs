@@ -28,9 +28,9 @@ impl MainState {
     }
 
     pub fn update(&mut self) {
-        self.ball.update();
         self.player1.update();
         self.player2.update();
+        self.ball.update(&[&self.player1, &self.player2]);
     }
 }
 
