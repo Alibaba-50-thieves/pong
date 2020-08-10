@@ -6,6 +6,8 @@ use ggez::graphics;
 use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
 
+pub const BALL_RADIUS: f32 = 25f32;
+
 pub struct Ball {
     pub position: na::Vector2<f32>,
     direction: na::Vector2<f32>,
@@ -29,7 +31,7 @@ impl Ball {
 
         players.iter().map(|p| p.paddle_vertex()).for_each(|p| {
             if p.chunks(2)
-                .any(|c| dist_to_segment(ball, c[0], c[1]) < 25f32)
+                .any(|c| dist_to_segment(ball, c[0], c[1]) < BALL_RADIUS)
             {
                 self.direction[0] = -self.direction[0];
             }
@@ -37,11 +39,11 @@ impl Ball {
     }
 
     pub fn handle_collision_window(&mut self) {
-        if self.position[1] + 25f32 > WINDOW_HEIGHT {
+        if self.position[1] + BALL_RADIUS > WINDOW_HEIGHT {
             self.direction[1] = -self.direction[1];
         }
 
-        if self.position[1] - 25f32 < 0.0f32 {
+        if self.position[1] - BALL_RADIUS < 0.0f32 {
             self.direction[1] = -self.direction[1];
         }
     }
@@ -61,10 +63,10 @@ impl Ball {
 
 #[test]
 fn update_moves_ball() {
-    let playes = &[&Player::new(-5f32, -5f32), &Player::new(-5f32, -5f32)];
+    let players = &[&Player::new(-5f32, -5f32), &Player::new(-5f32, -5f32)];
     let mut ball = Ball::new(0f32, 0f32);
     let init_pos = ball.position;
-    ball.update(playes);
+    ball.update(players);
     let updated_pos = ball.position;
     assert!(init_pos != updated_pos);
 }
