@@ -1,5 +1,6 @@
 use ggez::event::{EventHandler, KeyCode, KeyMods};
-use ggez::graphics;
+use ggez::graphics::{self, Scale, Text, TextFragment};
+use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
 
 use crate::ball::Ball;
@@ -42,6 +43,20 @@ impl EventHandler for MainState {
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
         clear_background(ctx);
+
+        let text = Text::new(
+            TextFragment::new(format!("{}x{}", self.ball.score1, self.ball.score2))
+                .scale(Scale::uniform(100.0)),
+        );
+
+        graphics::draw(
+            ctx,
+            &text,
+            (
+                na::Point2::new(WINDOW_WIDTH / 2.0 - 60.0, 10.0),
+                graphics::BLACK,
+            ),
+        )?;
 
         self.ball.draw(ctx)?;
         self.player1.draw(ctx)?;

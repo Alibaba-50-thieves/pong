@@ -20,7 +20,7 @@ pub fn dist_to_segment(p: Vector2<f32>, v: Vector2<f32>, w: Vector2<f32>) -> f32
 pub fn random_direction() -> Vector2<f32> {
     use rand::seq::SliceRandom;
     let mut rng = rand::thread_rng();
-    let x = vec![rng.gen_range(-1f32, -0.3f32), rng.gen_range(0.3f32, 1f32)];
+    let x = vec![rng.gen_range(-1f32, -0.5f32), rng.gen_range(0.5f32, 1f32)];
 
     4f32 * Vector2::new(*x.choose(&mut rng).unwrap(), rng.gen_range(-0.5f32, 0.5f32))
 }

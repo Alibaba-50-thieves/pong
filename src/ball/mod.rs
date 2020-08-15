@@ -1,7 +1,7 @@
 use crate::draw::get_ball_graphics;
 use crate::math::{dist_to_segment, random_direction};
 use crate::player::Player;
-use crate::state::WINDOW_HEIGHT;
+use crate::state::{WINDOW_HEIGHT, WINDOW_WIDTH};
 use ggez::graphics;
 use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
@@ -11,6 +11,8 @@ pub const BALL_RADIUS: f32 = 25f32;
 pub struct Ball {
     pub position: na::Vector2<f32>,
     direction: na::Vector2<f32>,
+    pub score1: usize,
+    pub score2: usize,
 }
 
 impl Ball {
@@ -18,12 +20,33 @@ impl Ball {
         Self {
             position: na::Vector2::new(x, y),
             direction: random_direction(),
+            score1: 0,
+            score2: 0,
         }
     }
 
     pub(crate) fn rolling_stones(&mut self) {
         self.position += self.direction;
-        self.position[0] = self.position[0] % 800.0;
+        self.handle_score();
+    }
+
+    fn handle_score(&mut self) {
+        match (self.position[0] < 1.0, self.position[0] > 799.0) {
+            (true, false) => {
+                self.score2 += 1;
+                self.restart();
+            }
+            (false, true) => {
+                self.score1 += 1;
+                self.restart();
+            }
+            _ => {}
+        }
+    }
+
+    fn restart(&mut self) {
+        self.direction = random_direction();
+        self.position = na::Vector2::new(WINDOW_WIDTH / 2.0, WINDOW_HEIGHT / 2.0);
     }
 
     fn handle_collisions_players(&mut self, players: &[&Player; 2]) {
@@ -76,6 +99,8 @@ fn direction_changes_when_hitting_upper_wall() {
     let mut ball = Ball {
         position: na::Vector2::new(400f32, 26f32),
         direction: na::Vector2::new(0f32, -1.1f32),
+        score1: 0,
+        score2: 0,
     };
 
     ball.rolling_stones();
@@ -89,6 +114,8 @@ fn direction_changes_when_hitting_lower_wall() {
     let mut ball = Ball {
         position: na::Vector2::new(400f32, 573f32),
         direction: na::Vector2::new(0f32, 2.1f32),
+        score1: 0,
+        score2: 0,
     };
 
     ball.rolling_stones();
@@ -102,6 +129,8 @@ fn direction_doesnt_changes_when_away_from_wall() {
     let mut ball = Ball {
         position: na::Vector2::new(400f32, 523f32),
         direction: na::Vector2::new(0f32, 2.1f32),
+        score1: 0,
+        score2: 0,
     };
 
     ball.rolling_stones();
@@ -115,10 +144,62 @@ fn direction_changes_when_hitting_pad() {
     let mut ball = Ball {
         position: na::Vector2::new(67f32, 250f32),
         direction: na::Vector2::new(-4f32, 0f32),
+        score1: 0,
+        score2: 0,
     };
     let players = &[&Player::new(40.0, 225.0), &Player::new(-5f32, -5f32)];
 
     ball.update(players);
 
     assert_eq!(ball.direction, na::Vector2::new(4f32, 0f32));
+    assert_eq!(ball.score2, 0);
+    assert_eq!(ball.score1, 0);
+}
+
+#[test]
+fn when_position_is_lower_than_left_side_score2_increases() {
+    let mut ball = Ball {
+        position: na::Vector2::new(2f32, 26f32),
+        direction: na::Vector2::new(-3f32, 0f32),
+        score1: 0,
+        score2: 0,
+    };
+
+    ball.rolling_stones();
+
+    assert_eq!(ball.score2, 1);
+    assert_eq!(ball.score1, 0);
+}
+
+#[test]
+fn when_position_is_greater_than_right_side_score1_increases() {
+    let mut ball = Ball {
+        position: na::Vector2::new(798f32, 26f32),
+        direction: na::Vector2::new(3f32, 0f32),
+        score1: 0,
+        score2: 0,
+    };
+
+    ball.rolling_stones();
+
+    assert_eq!(ball.score2, 0);
+    assert_eq!(ball.score1, 1);
+}
+
+#[test]
+fn when_score_happens_the_ball_will_restart() {
+    let old_direction = na::Vector2::new(3f32, 0f32);
+    let mut ball = Ball {
+        position: na::Vector2::new(798f32, 26f32),
+        direction: old_direction.clone(),
+        score1: 0,
+        score2: 0,
+    };
+
+    ball.rolling_stones();
+
+    assert_eq!(ball.score1, 1);
+
+    assert_eq!(ball.position, na::Vector2::new(400.0, 300.0));
+    assert!(ball.direction != old_direction);
 }
