@@ -1,7 +1,7 @@
 use crate::draw::get_ball_graphics;
 use crate::math::{dist_to_segment, random_direction};
 use crate::player::Player;
-use crate::state::{WINDOW_HEIGHT, WINDOW_WIDTH};
+use crate::state::{WINDOW_HEIGHT, WINDOW_START, WINDOW_WIDTH};
 use ggez::graphics;
 use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
@@ -10,9 +10,9 @@ pub const BALL_RADIUS: f32 = 25f32;
 
 pub struct Ball {
     pub position: na::Vector2<f32>,
-    direction: na::Vector2<f32>,
     pub score1: usize,
     pub score2: usize,
+    direction: na::Vector2<f32>,
 }
 
 impl Ball {
@@ -53,9 +53,11 @@ impl Ball {
         let ball = self.position;
 
         players.iter().map(|p| p.paddle_vertex()).for_each(|p| {
-            if p.chunks(2)
-                .any(|c| dist_to_segment(ball, c[0], c[1]) < BALL_RADIUS)
-            {
+            if p.chunks(2).any(|c| {
+                dist_to_segment(ball, c[0], c[1]) < BALL_RADIUS
+                    && ((self.position[0] < WINDOW_WIDTH / 2.0 && self.direction[0] < 0.0)
+                        || (self.position[0] > WINDOW_WIDTH / 2.0 && self.direction[0] > 0.0))
+            }) {
                 self.direction[0] = -self.direction[0];
             }
         });
@@ -66,7 +68,7 @@ impl Ball {
             self.direction[1] = -self.direction[1];
         }
 
-        if self.position[1] - BALL_RADIUS < 0.0f32 {
+        if self.position[1] - BALL_RADIUS < WINDOW_START {
             self.direction[1] = -self.direction[1];
         }
     }
