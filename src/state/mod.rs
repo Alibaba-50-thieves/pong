@@ -9,6 +9,7 @@ use crate::player::{Player, PADDLE_WIDTH};
 
 pub const WINDOW_WIDTH: f32 = 800.0;
 pub const WINDOW_HEIGHT: f32 = 600.0;
+pub const WINDOW_START: f32 = 0.0;
 
 pub const GOAL_DISTANCE: f32 = 40.0;
 
@@ -21,7 +22,7 @@ pub struct MainState {
 impl MainState {
     pub fn new() -> GameResult<MainState> {
         let s = MainState {
-            ball: Ball::new(400.0, 300.0),
+            ball: Ball::new(WINDOW_WIDTH / 2.0, WINDOW_HEIGHT / 2.0),
             player1: Player::new(40.0, 225.0),
             player2: Player::new(WINDOW_WIDTH - (PADDLE_WIDTH + GOAL_DISTANCE), 225.0),
         };
