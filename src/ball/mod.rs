@@ -53,10 +53,10 @@ impl Ball {
         let ball = self.position;
 
         players.iter().map(|p| p.paddle_vertex()).for_each(|p| {
-            if p.chunks(2).any(|c|
+            if p.chunks(2).any(|c| {
                 dist_to_segment(ball, c[0], c[1]) < BALL_RADIUS
                     && is_ball_in_correct_direction(self.position[0], self.direction[0])
-            ) {
+            }) {
                 self.direction[0] = -self.direction[0];
             }
         });
@@ -86,8 +86,7 @@ impl Ball {
 }
 
 fn is_ball_in_correct_direction(x_pos: f32, x_dir: f32) -> bool {
-    (x_pos < WINDOW_WIDTH / 2.0 && x_dir < 0.0)
-        || (x_pos > WINDOW_WIDTH / 2.0 && x_dir > 0.0)
+    (x_pos < WINDOW_WIDTH / 2.0 && x_dir < 0.0) || (x_pos > WINDOW_WIDTH / 2.0 && x_dir > 0.0)
 }
 
 #[test]
